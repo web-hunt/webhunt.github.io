@@ -8,15 +8,13 @@ const websites = [
         url: "https://photopea.com",
         logo: "https://placehold.co/80/38bdf8/ffffff?text=P",
         category: "Photo",
-        tags: ["Free", "Editing", "Design"],
-        featured: true,
+        tags: ["Free","Editing","Design"],
         trending: true,
         hiddenGem: false,
         recent: false,
         rating: 4.9,
-        views: "2.4M"
+        views: 2400000
     },
-
     {
         id: "removebg",
         name: "Remove.bg",
@@ -24,176 +22,211 @@ const websites = [
         url: "https://remove.bg",
         logo: "https://placehold.co/80/22c55e/ffffff?text=R",
         category: "AI",
-        tags: ["AI", "Free"],
-        featured: false,
+        tags: ["AI","Free"],
         trending: true,
         hiddenGem: false,
         recent: true,
         rating: 4.8,
-        views: "1.8M"
+        views: 1800000
     },
-
     {
         id: "toffeeshare",
         name: "ToffeeShare",
-        description: "Fast peer-to-peer file sharing.",
+        description: "Peer-to-peer file sharing.",
         url: "https://toffeeshare.com",
         logo: "https://placehold.co/80/f97316/ffffff?text=T",
         category: "Files",
-        tags: ["Files", "Free"],
-        featured: false,
+        tags: ["Files","Free"],
         trending: false,
         hiddenGem: true,
         recent: true,
         rating: 4.7,
-        views: "320K"
+        views: 320000
     },
-
     {
         id: "windowswap",
         name: "WindowSwap",
-        description: "Look through windows from around the world.",
+        description: "Look through windows around the world.",
         url: "https://window-swap.com",
         logo: "https://placehold.co/80/a855f7/ffffff?text=W",
         category: "Fun",
-        tags: ["Travel", "Fun"],
-        featured: false,
+        tags: ["Travel","Fun"],
         trending: false,
         hiddenGem: true,
         recent: false,
         rating: 4.8,
-        views: "740K"
+        views: 740000
     }
 ];
 
-const search = document.querySelector("input[type='search']");
-const grids = document.querySelectorAll(".card-grid");
+const grid = document.querySelector(".card-grid");
 
-const trendingGrid = grids[0];
-const hiddenGrid = grids[1];
-const recentGrid = grids[2];
+const searchInput = document.getElementById("searchInput");
+
+const categoryFilter = document.getElementById("categoryFilter");
+
+const sortFilter = document.getElementById("sortFilter");
+
+const trendingFilter = document.getElementById("trendingFilter");
+
+const hiddenFilter = document.getElementById("hiddenFilter");
+
+const recentFilter = document.getElementById("recentFilter");
+
+const resultTitle = document.getElementById("resultTitle");
 
 function createCard(site){
 
-    const tags = site.tags.map(tag =>
-        `<span class="tag">${tag}</span>`
-    ).join("");
-
     return `
-        <div class="card">
 
-            <img src="${site.logo}" alt="${site.name}">
+    <div class="card">
 
-            <span class="category">${site.category}</span>
+        <img src="${site.logo}" alt="${site.name}">
 
-            <h3>${site.name}</h3>
+        <span class="category">
 
-            <p>${site.description}</p>
+            ${site.category}
 
-            <div class="tags">
-                ${tags}
-            </div>
+        </span>
 
-            <div class="card-buttons">
+        <h3>${site.name}</h3>
 
-                <button class="favorite">❤</button>
+        <p>${site.description}</p>
 
-                <a
-                    href="website.html?id=${site.id}"
-                    class="visit-btn">
-                    View →
-                </a>
+        <div class="tags">
 
-            </div>
+            ${site.tags.map(tag=>`<span class="tag">${tag}</span>`).join("")}
 
         </div>
-    `;
 
-}
+        <div class="card-buttons">
 
-function renderFeatured(){
+            <button class="favorite">
 
-    const featured = websites.find(site => site.featured);
+                ❤
 
-    const card = document.querySelector(".featured-card");
-
-    if(!card || !featured) return;
-
-    card.innerHTML = `
-        <img src="${featured.logo}" alt="${featured.name}">
-
-        <div>
-
-            <span class="category">${featured.category}</span>
-
-            <h3>${featured.name}</h3>
-
-            <p>${featured.description}</p>
+            </button>
 
             <a
-                href="website.html?id=${featured.id}"
+                href="website.html?id=${site.id}"
                 class="visit-btn">
-                Explore →
+
+                View →
+
             </a>
 
         </div>
+
+    </div>
+
     `;
 
 }
 
 function render(){
 
-    if(trendingGrid) trendingGrid.innerHTML = "";
-    if(hiddenGrid) hiddenGrid.innerHTML = "";
-    if(recentGrid) recentGrid.innerHTML = "";
+    let data = [...websites];
 
-    const value = search ? search.value.toLowerCase() : "";
+    const search = searchInput.value.toLowerCase();
 
-    websites.forEach(site=>{
+    if(search){
 
-        const match =
-            site.name.toLowerCase().includes(value) ||
-            site.description.toLowerCase().includes(value) ||
-            site.category.toLowerCase().includes(value) ||
-            site.tags.join(" ").toLowerCase().includes(value);
+        data = data.filter(site=>
 
-        if(!match) return;
+            site.name.toLowerCase().includes(search) ||
 
-        if(trendingGrid && site.trending){
-            trendingGrid.innerHTML += createCard(site);
-        }
+            site.description.toLowerCase().includes(search) ||
 
-        if(hiddenGrid && site.hiddenGem){
-            hiddenGrid.innerHTML += createCard(site);
-        }
+            site.category.toLowerCase().includes(search) ||
 
-        if(recentGrid && site.recent){
-            recentGrid.innerHTML += createCard(site);
-        }
+            site.tags.join(" ").toLowerCase().includes(search)
+
+        );
+
+    }
+
+    if(categoryFilter.value !== "all"){
+
+        data = data.filter(site=>
+
+            site.category === categoryFilter.value
+
+        );
+
+    }
+
+    if(trendingFilter.checked){
+
+        data = data.filter(site=>site.trending);
+
+    }
+
+    if(hiddenFilter.checked){
+
+        data = data.filter(site=>site.hiddenGem);
+
+    }
+
+    if(recentFilter.checked){
+
+        data = data.filter(site=>site.recent);
+
+    }
+
+    switch(sortFilter.value){
+
+        case "rating":
+
+            data.sort((a,b)=>b.rating-a.rating);
+
+            break;
+
+        case "az":
+
+            data.sort((a,b)=>
+
+                a.name.localeCompare(b.name)
+
+            );
+
+            break;
+
+        case "popular":
+
+            data.sort((a,b)=>b.views-a.views);
+
+            break;
+
+        case "random":
+
+            data.sort(()=>Math.random()-0.5);
+
+            break;
+
+    }
+
+    resultTitle.textContent = `Results (${data.length})`;
+
+    grid.innerHTML = "";
+
+    data.forEach(site=>{
+
+        grid.innerHTML += createCard(site);
 
     });
 
 }
+
+searchInput.addEventListener("input",render);
+
+categoryFilter.addEventListener("change",render);
+
+sortFilter.addEventListener("change",render);
+
+trendingFilter.addEventListener("change",render);
+
+hiddenFilter.addEventListener("change",render);
+
+recentFilter.addEventListener("change",render);
 
 render();
-renderFeatured();
-
-if(search){
-    search.addEventListener("input",render);
-}
-
-const randomBtn = document.getElementById("randomBtn");
-
-if(randomBtn){
-
-    randomBtn.addEventListener("click",()=>{
-
-        const random =
-            websites[Math.floor(Math.random()*websites.length)];
-
-        window.location.href =
-            `website.html?id=${random.id}`;
-
-    });
-
-}
