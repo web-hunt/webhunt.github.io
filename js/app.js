@@ -1,4 +1,6 @@
-const const websites = [
+// js/app.js
+
+const websites = [
     {
         id: "photopea",
         name: "Photopea",
@@ -22,7 +24,7 @@ const const websites = [
         url: "https://remove.bg",
         logo: "https://placehold.co/80/22c55e/ffffff?text=R",
         category: "AI",
-        tags: ["AI","Free"],
+        tags: ["AI", "Free"],
         featured: false,
         trending: true,
         hiddenGem: false,
@@ -38,7 +40,7 @@ const const websites = [
         url: "https://toffeeshare.com",
         logo: "https://placehold.co/80/f97316/ffffff?text=T",
         category: "Files",
-        tags: ["Files","Free"],
+        tags: ["Files", "Free"],
         featured: false,
         trending: false,
         hiddenGem: true,
@@ -54,7 +56,7 @@ const const websites = [
         url: "https://window-swap.com",
         logo: "https://placehold.co/80/a855f7/ffffff?text=W",
         category: "Fun",
-        tags: ["Travel","Fun"],
+        tags: ["Travel", "Fun"],
         featured: false,
         trending: false,
         hiddenGem: true,
@@ -65,7 +67,6 @@ const const websites = [
 ];
 
 const search = document.querySelector("input[type='search']");
-
 const grids = document.querySelectorAll(".card-grid");
 
 const trendingGrid = grids[0];
@@ -98,10 +99,9 @@ function createCard(site){
                 <button class="favorite">❤</button>
 
                 <a
-                    href="${site.url}"
-                    target="_blank"
+                    href="website.html?id=${site.id}"
                     class="visit-btn">
-                    Visit →
+                    View →
                 </a>
 
             </div>
@@ -111,13 +111,43 @@ function createCard(site){
 
 }
 
+function renderFeatured(){
+
+    const featured = websites.find(site => site.featured);
+
+    const card = document.querySelector(".featured-card");
+
+    if(!card || !featured) return;
+
+    card.innerHTML = `
+        <img src="${featured.logo}" alt="${featured.name}">
+
+        <div>
+
+            <span class="category">${featured.category}</span>
+
+            <h3>${featured.name}</h3>
+
+            <p>${featured.description}</p>
+
+            <a
+                href="website.html?id=${featured.id}"
+                class="visit-btn">
+                Explore →
+            </a>
+
+        </div>
+    `;
+
+}
+
 function render(){
 
-    trendingGrid.innerHTML = "";
-    hiddenGrid.innerHTML = "";
-    recentGrid.innerHTML = "";
+    if(trendingGrid) trendingGrid.innerHTML = "";
+    if(hiddenGrid) hiddenGrid.innerHTML = "";
+    if(recentGrid) recentGrid.innerHTML = "";
 
-    const value = search.value.toLowerCase();
+    const value = search ? search.value.toLowerCase() : "";
 
     websites.forEach(site=>{
 
@@ -129,15 +159,15 @@ function render(){
 
         if(!match) return;
 
-        if(site.trending){
+        if(trendingGrid && site.trending){
             trendingGrid.innerHTML += createCard(site);
         }
 
-        if(site.hiddenGem){
+        if(hiddenGrid && site.hiddenGem){
             hiddenGrid.innerHTML += createCard(site);
         }
 
-        if(site.recent){
+        if(recentGrid && site.recent){
             recentGrid.innerHTML += createCard(site);
         }
 
@@ -146,14 +176,24 @@ function render(){
 }
 
 render();
+renderFeatured();
 
-search.addEventListener("input",render);
+if(search){
+    search.addEventListener("input",render);
+}
 
-document.getElementById("randomBtn").addEventListener("click",()=>{
+const randomBtn = document.getElementById("randomBtn");
 
-    const random =
-        websites[Math.floor(Math.random()*websites.length)];
+if(randomBtn){
 
-    window.open(random.url,"_blank");
+    randomBtn.addEventListener("click",()=>{
 
-});
+        const random =
+            websites[Math.floor(Math.random()*websites.length)];
+
+        window.location.href =
+            `website.html?id=${random.id}`;
+
+    });
+
+}
