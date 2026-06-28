@@ -1,1 +1,191 @@
+<!-- favorites.html -->
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Favorites • WebHunt</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo">
+        🌐 <span>WebHunt</span>
+    </div>
+
+    <nav>
+
+        <a href="index.html">Home</a>
+
+        <a href="favorites.html">Favorites</a>
+
+        <a href="#">Categories</a>
+
+        <a href="#">Collections</a>
+
+        <a href="#">Submit</a>
+
+    </nav>
+
+</header>
+
+<section>
+
+    <h1>Your Favorites</h1>
+
+    <p class="subtitle">
+
+        Websites you've saved will appear here.
+
+    </p>
+
+    <div id="favoritesGrid"
+         class="card-grid">
+
+    </div>
+
+</section>
+
+<footer>
+
+    <p>
+
+        © 2026 WebHunt
+
+    </p>
+
+</footer>
+
+<script src="js/app.js"></script>
+
+<script src="js/favorites.js"></script>
+
+<script>
+
+const grid =
+document.getElementById("favoritesGrid");
+
+const favorites =
+JSON.parse(localStorage.getItem("webhunt-favorites")) || [];
+
+const favoriteSites =
+websites.filter(site =>
+favorites.includes(site.id)
+);
+
+if(favoriteSites.length===0){
+
+grid.innerHTML=`
+
+<div style="
+grid-column:1/-1;
+text-align:center;
+padding:60px;
+">
+
+<h2>No favorites yet.</h2>
+
+<p>
+Start exploring WebHunt and save
+your favorite websites.
+</p>
+
+<a
+class="visit-btn"
+href="index.html">
+
+Explore Websites
+
+</a>
+
+</div>
+
+`;
+
+}
+
+else{
+
+favoriteSites.forEach(site=>{
+
+const tags =
+site.tags.map(tag=>
+
+`<span class="tag">${tag}</span>`
+
+).join("");
+
+grid.innerHTML+=`
+
+<div class="card">
+
+<img src="${site.logo}">
+
+<span class="category">
+
+${site.category}
+
+</span>
+
+<h3>
+
+${site.name}
+
+</h3>
+
+<p>
+
+${site.description}
+
+</p>
+
+<div class="tags">
+
+${tags}
+
+</div>
+
+<div class="card-buttons">
+
+<button
+class="favorite"
+data-id="${site.id}">
+
+❤️
+
+</button>
+
+<a
+
+class="visit-btn"
+
+href="website.html?id=${site.id}">
+
+View →
+
+</a>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
