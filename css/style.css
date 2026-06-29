@@ -60,28 +60,6 @@ header{
 #navbar a:hover{
     color:#3b82f6;
 }
-.logo{
-    font-size:30px;
-    font-weight:bold;
-}
-
-.logo span{
-    color:var(--primary);
-}
-
-nav{
-    display:flex;
-    gap:24px;
-}
-
-nav a{
-    color:var(--muted);
-    transition:.2s;
-}
-
-nav a:hover{
-    color:white;
-}
 
 .hero{
     max-width:850px;
